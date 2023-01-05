@@ -2426,6 +2426,11 @@
     prompts "^2.4.0"
     semver "^6.3.0"
 
+"@react-native-firebase/database@^16.5.0":
+  version "16.5.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/database/-/database-16.5.0.tgz#9bb541cd61a519b33f31bb29d5bdcb4605e00bc7"
+  integrity sha512-swQeygaKqkkg5j7zkjlzX/yFEtXktBj+Bm3rPAdVEusTgSndZyK3ul8r2ReI97QCNoMZp8G2zsEhfhKYVBt1iA==
+
 "@react-native/assets@1.0.0":
   version "1.0.0"
   resolved "https://registry.npmjs.org/@react-native/assets/-/assets-1.0.0.tgz"
