@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "StockTrackingApp",
+    "slug": "StockTrackingApp",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "StockTrackingApp"
+}
