@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
 import {View} from 'react-native';
 import {initializeApp} from "firebase/app";
-import ProductList from "./src/ProductList";
+import ProductList from "./src/screens/ProductList";
 import {firebaseConfig} from "./src/config/firebase";
-import Header from "./src/Header"
-import AddProduct from "./src/AddProduct";
+import Header from "./src/screens/Header"
+import AddProduct from "./src/screens/AddProduct";
 
 export default function App() {
 

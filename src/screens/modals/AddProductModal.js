@@ -5,14 +5,17 @@ import {getDatabase, ref, set} from "firebase/database";
 const AddProductModal = (props) => {
     const [serialNo, setSerialNo] = useState();
     const [productName, setProductName] = useState("");
-    const [count, setCount] = useState();
-
+    const [quantity, setQuantity] = useState();
+    const [purchasePrice, setPurchasePrice] = useState();
+    const [salePrice, setSalePrice] = useState();
     const writeProductData = () => {
         const db = getDatabase();
         set(ref(db, 'products/' + serialNo), {
             serialNo: serialNo,
             productName: productName,
-            count: count
+            quantity: quantity,
+            purchasePrice: purchasePrice,
+            salePrice: salePrice,
         });
         props.setModalVisible(false)
     }
@@ -30,7 +33,7 @@ const AddProductModal = (props) => {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.title}>Seri No(*)</Text>
+                        <Text style={styles.title}>Serial Number(*)</Text>
                         <TextInput
                             style={styles.input}
                             onChangeText={setSerialNo}
@@ -38,7 +41,7 @@ const AddProductModal = (props) => {
                             placeholder=""
                             keyboardType="numeric"
                         />
-                        <Text style={styles.title}>Ürün Adı(*)</Text>
+                        <Text style={styles.title}>Product Name(*)</Text>
                         <TextInput
                             style={styles.input}
                             onChangeText={setProductName}
@@ -46,11 +49,27 @@ const AddProductModal = (props) => {
                             placeholder=""
                             keyboardType="numeric"
                         />
-                        <Text style={styles.title}>Stok Adedi(*)</Text>
+                        <Text style={styles.title}>Stock Quantity(*)</Text>
                         <TextInput
                             style={styles.input}
-                            onChangeText={setCount}
-                            value={count}
+                            onChangeText={setQuantity}
+                            value={quantity}
+                            placeholder=""
+                            keyboardType="numeric"
+                        />
+                        <Text style={styles.title}>Purchase Price(*)</Text>
+                        <TextInput
+                            style={styles.input}
+                            onChangeText={setPurchasePrice}
+                            value={purchasePrice}
+                            placeholder=""
+                            keyboardType="numeric"
+                        />
+                        <Text style={styles.title}>Sale Price(*)</Text>
+                        <TextInput
+                            style={styles.input}
+                            onChangeText={setSalePrice}
+                            value={salePrice}
                             placeholder=""
                             keyboardType="numeric"
                         />

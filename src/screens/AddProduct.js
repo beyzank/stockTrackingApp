@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {TouchableOpacity, View} from "react-native";
-import AddProductModal from "./AddProductModal";
+import AddProductModal from "./modals/AddProductModal";
 
 const AddProduct = () => {
     const [modalVisible, setModalVisible] = useState(false);
