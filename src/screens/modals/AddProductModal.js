@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Alert, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-import {getDatabase, ref, set} from "firebase/database";
+import {createNewProduct, getProducts} from "../../store/client/product";
 
 const AddProductModal = (props) => {
     const [serialNo, setSerialNo] = useState();
@@ -9,14 +9,13 @@ const AddProductModal = (props) => {
     const [purchasePrice, setPurchasePrice] = useState();
     const [salePrice, setSalePrice] = useState();
     const writeProductData = () => {
-        const db = getDatabase();
-        set(ref(db, 'products/' + serialNo), {
+        createNewProduct({
             serialNo: serialNo,
             productName: productName,
             quantity: quantity,
             purchasePrice: purchasePrice,
             salePrice: salePrice,
-        });
+        }).then(() => getProducts());
         props.setModalVisible(false)
     }
 
@@ -73,7 +72,9 @@ const AddProductModal = (props) => {
                             placeholder=""
                             keyboardType="numeric"
                         />
-                        <TouchableOpacity style={styles.saveButton} onPress={writeProductData}>Kaydet</TouchableOpacity>
+                        <TouchableOpacity style={styles.saveButton} onPress={writeProductData}>
+                            <Text style={styles.buttonText}>Kaydet</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </Modal>
@@ -123,10 +124,12 @@ const styles = StyleSheet.create({
         height: 40,
         width: "100%",
         backgroundColor: "#5d76cb",
-        color: "#fff",
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 6
+    },
+    buttonText:{
+        color: "#fff",
     }
 });
 export default AddProductModal;

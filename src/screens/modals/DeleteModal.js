@@ -1,32 +1,39 @@
 import React from 'react';
-import {Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Alert, Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {removeProduct} from "../../store/client/product";
 
 const DeleteModal = (props) => {
     const deleteItem = () => {
-        alert("deleted")
+        removeProduct(props.id)
+        props.setModalVisible(false)
     }
 
     return (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={props.modalVisible}
-            onRequestClose={() => {
-                props.setModalVisible(!props.modalVisible);
-            }}
-        > <View style={styles.centeredView}>
-
-            <View style={styles.modalView}>
-                <Text style={styles.text}>Are you sure want to delete this item?</Text>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.saveButton} onPress={deleteItem}>Yes</TouchableOpacity>
-                    <TouchableOpacity style={styles.saveButton}
-                                      onPress={() => props.setModalVisible(false)}>Cancel</TouchableOpacity>
+        <View style={styles.centeredView}>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={props.modalVisible}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                    props.setModalVisible(!props.modalVisible);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.title}>Are you sure want to delete this product?</Text>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.saveButton} onPress={deleteItem}>
+                                <Text style={styles.buttonText}>Delete</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.saveButton} onPress={() => props.setModalVisible(false)}>
+                                <Text style={styles.buttonText}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
-            </View>
-
+            </Modal>
         </View>
-        </Modal>
     );
 };
 const styles = StyleSheet.create({
@@ -58,24 +65,31 @@ const styles = StyleSheet.create({
         elevation: 5
     },
 
-    text: {
+    title:{
         fontSize: 18,
-        marginBottom: 10,
-        textAlign: "center"
+        marginBottom: 10
     },
-    buttonContainer: {
-      flexDirection: "row",
-      justifyContent: "space-around",
-        marginTop: 50
+    input:{
+        height: 35,
+        borderRadius: 6,
+        border: "1px solid #aeaeae",
+        marginBottom: 25
     },
-    saveButton: {
+    saveButton:{
         height: 40,
         width: "40%",
         backgroundColor: "#5d76cb",
-        color: "#fff",
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 6
+    },
+    buttonContainer: {
+        flexDirection: "row",
+        justifyContent: "space-around",
+        marginTop: 50
+    },
+    buttonText:{
+        color: "#fff",
     }
 });
-export default DeleteModal;
+export default DeleteModal

@@ -1,25 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, Text, TouchableOpacity, View} from "react-native";
-import {child, get, getDatabase, ref, update} from "firebase/database";
-import {initializeApp} from "firebase/app";
-import {firebaseConfig} from "../config/firebase";
+import {child, get} from "firebase/database";
+import {dbRef} from "../config/firebase";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import DeleteModal from "./modals/DeleteModal";
+import {getProducts, updateProduct} from "../store/client/product";
 
 const ProductList = () => {
 
     const [products, setProducts] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
-    initializeApp(firebaseConfig);
-    const db = getDatabase();
+    const [selectedItem, setSelectedItem] = useState();
 
     useEffect(() => {
-        getProducts();
-    }, []);
+        getProductList();
+    }, [products]);
 
 
-    const getProducts = () => {
-        const dbRef = ref(db);
+    const getProductList = () => {
+
         get(child(dbRef, `products/`)).then((snapshot) => {
             if (snapshot.exists()) {
                 const array = [];
@@ -45,9 +44,7 @@ const ProductList = () => {
             purchasePrice: item.purchasePrice,
             salePrice: item.salePrice,
         };
-        const updates = {};
-        updates['/products/' + item.serialNo] = postData;
-        return update(ref(db), updates);
+        updateProduct(postData).then(() => getProducts())
     }
 
     const increase = (item) => {
@@ -59,9 +56,12 @@ const ProductList = () => {
             purchasePrice: item.purchasePrice,
             salePrice: item.salePrice,
         };
-        const updates = {};
-        updates['/products/' + item.serialNo] = postData;
-        return update(ref(db), updates);
+        updateProduct(postData).then(() => getProducts())
+    }
+
+    const deleteItem = (item) => {
+        setSelectedItem(item.serialNo)
+        setModalVisible(true)
     }
 
     const productItem = ({item}) => {
@@ -69,14 +69,18 @@ const ProductList = () => {
             <Text style={styles.cell}>{item.serialNo}</Text>
             <Text style={styles.cell}>{item.productName}</Text>
             <View style={styles.countContainer}>
-                <TouchableOpacity style={styles.buttons} onPress={() => decrease(item)}> - </TouchableOpacity>
+                <TouchableOpacity style={styles.buttons} onPress={() => decrease(item)}>
+                    <Text style={styles.title}> - </Text>
+                </TouchableOpacity>
                 <Text>{item.quantity}</Text>
-                <TouchableOpacity style={styles.buttons} onPress={() => increase(item)}> + </TouchableOpacity>
+                <TouchableOpacity style={styles.buttons} onPress={() => increase(item)}>
+                    <Text style={styles.title}> + </Text>
+                </TouchableOpacity>
             </View>
             <Text style={styles.cell}>{item.purchasePrice}</Text>
             <Text style={styles.cell}>{item.salePrice}</Text>
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <Icon name="delete" size={30} color="#900" />
+            <TouchableOpacity onPress={() => deleteItem(item)}>
+                <Icon name="delete" size={30} color="#900"/>
             </TouchableOpacity>
         </View>
     }
@@ -90,9 +94,9 @@ const ProductList = () => {
                     <Text style={styles.title}>Purchase Price </Text>
                     <Text style={styles.title}>Sale Price</Text>
                 </View>
-                {products && products !== null && <FlatList data={products} renderItem={productItem}/>}
+                <FlatList data={products && products !== null ? products : null} renderItem={productItem}/>
             </View>
-            <DeleteModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
+            <DeleteModal modalVisible={modalVisible} setModalVisible={setModalVisible} id={selectedItem}/>
         </View>
     );
 };
@@ -124,7 +128,6 @@ const styles = {
         borderRadius: 6,
         alignItems: "center",
         justifyContent: "center",
-        color: "#fff"
     },
     cell: {
         textAlign: "center",

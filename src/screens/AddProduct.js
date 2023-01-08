@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {TouchableOpacity, View} from "react-native";
+import {Text, TouchableOpacity, View} from "react-native";
 import AddProductModal from "./modals/AddProductModal";
 
 const AddProduct = () => {
@@ -10,24 +10,28 @@ const AddProduct = () => {
     }
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.button} onPress={openAddProductModal}>Add New Product</TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={openAddProductModal}>
+                <Text style={styles.buttonText}>Add New Product</Text>
+            </TouchableOpacity>
             <AddProductModal modalVisible={modalVisible} setModalVisible={setModalVisible}/>
         </View>
     );
 };
 const styles = {
-    container:{
-      alignItems: "flex-end"
+    container: {
+        alignItems: "flex-end"
     },
-    button:{
+    button: {
         width: 180,
         height: 40,
         textAlign: "center",
         justifyContent: "center",
-        borderRadius:6,
-        backgroundColor: "#5d76cb",
-        color: "#fff",
+        borderRadius: 6,
         marginVertical: 20,
+        backgroundColor: "#5d76cb",
+    },
+    buttonText: {
+        color: "#fff",
         fontSize: 16,
         fontWeight: "bold"
     }
