@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "421003806366",
+    "firebase_url": "https://idvlabs-stock-tracking-app-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "idvlabs-stock-tracking-app",
+    "storage_bucket": "idvlabs-stock-tracking-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:421003806366:android:764967f800b880c31bdd8f",
+        "android_client_info": {
+          "package_name": "com.stocktrackingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "421003806366-8e1a6el2rcr0bgmc9g4v966kepidk3kl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJmqNwHIr0IjUeRKzUK3hJaTHkiSshJrM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "421003806366-8e1a6el2rcr0bgmc9g4v966kepidk3kl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

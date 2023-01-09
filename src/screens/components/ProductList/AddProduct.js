@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Text, TouchableOpacity, View} from "react-native";
-import AddProductModal from "./modals/AddProductModal";
+import AddProductModal from "../../modals/AddProductModal";
 
 const AddProduct = () => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -18,8 +18,8 @@ const AddProduct = () => {
     );
 };
 const styles = {
-    container: {
-        alignItems: "flex-end"
+    container:{
+      marginRight:40
     },
     button: {
         width: 180,
@@ -27,7 +27,6 @@ const styles = {
         textAlign: "center",
         justifyContent: "center",
         borderRadius: 6,
-        marginVertical: 20,
         backgroundColor: "#5d76cb",
     },
     buttonText: {

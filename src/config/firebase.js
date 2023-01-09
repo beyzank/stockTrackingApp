@@ -1,5 +1,5 @@
-import {getDatabase, ref} from "firebase/database";
-import {initializeApp} from "firebase/app";
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from "firebase/firestore";
 
 export const firebaseConfig = {
     apiKey: "AIzaSyDrwO5k065Ka1N4e20YDGxdSIlmcQAyFBY",
@@ -10,6 +10,8 @@ export const firebaseConfig = {
     appId: "1:421003806366:web:f108816a2250bf361bdd8f",
     databaseURL: "https://idvlabs-stock-tracking-app-default-rtdb.europe-west1.firebasedatabase.app",
 };
-initializeApp(firebaseConfig);
-export const db = getDatabase();
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
 export const dbRef = ref(db);
+
+

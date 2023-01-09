@@ -1,86 +1,85 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, Text, TouchableOpacity, View} from "react-native";
-import {child, get} from "firebase/database";
-import {dbRef} from "../config/firebase";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import DeleteModal from "./modals/DeleteModal";
-import {getProducts, updateProduct} from "../store/client/product";
+import DeleteModal from "../../modals/DeleteModal";
+import {getProducts, updateProduct} from "../../../store/client/product";
+import {useNavigation} from "@react-navigation/native";
 
 const ProductList = () => {
-
-    const [products, setProducts] = useState(null);
+    const [products, setProducts] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState();
+    const navigation = useNavigation();
 
     useEffect(() => {
-        getProductList();
-    }, [products]);
+        getProductList().then(res => setProducts(res));
+    }, []);
 
 
-    const getProductList = () => {
-
-        get(child(dbRef, `products/`)).then((snapshot) => {
-            if (snapshot.exists()) {
-                const array = [];
-                const data = snapshot.val()
-                Object.keys(data).map(item => {
-                    array.push(data[item]);
-                });
-                setProducts(array)
-            } else {
-                console.log("No data available");
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
+    const getProductList = async () => {
+        let array = []
+        await getProducts().then(res => {
+            res.forEach((doc) => {
+                array.push({data: doc.data(), id: doc.id})
+            });
+        })
+        return array;
     }
 
     const decrease = (item) => {
 
         const postData = {
-            serialNo: item.serialNo,
-            productName: item.productName,
-            quantity: item.quantity - 1,
-            purchasePrice: item.purchasePrice,
-            salePrice: item.salePrice,
+            serialNo: item.data.serialNo,
+            productName: item.data.productName,
+            quantity: item.data.quantity - 1,
+            purchasePrice: item.data.purchasePrice,
+            salePrice: item.data.salePrice,
         };
-        updateProduct(postData).then(() => getProducts())
+        updateProduct(postData, item.id).then(() => getProducts())
     }
 
     const increase = (item) => {
 
         const postData = {
-            serialNo: item.serialNo,
-            productName: item.productName,
-            quantity: item.quantity + 1,
-            purchasePrice: item.purchasePrice,
-            salePrice: item.salePrice,
+            serialNo: item.data.serialNo,
+            productName: item.data.productName,
+            quantity: item.data.quantity + 1,
+            purchasePrice: item.data.purchasePrice,
+            salePrice: item.data.salePrice,
         };
-        updateProduct(postData).then(() => getProducts())
+        updateProduct(postData, item.id).then(() => getProducts())
     }
 
     const deleteItem = (item) => {
-        setSelectedItem(item.serialNo)
+        setSelectedItem(item.id)
         setModalVisible(true)
+    }
+    const editItem = (item) => {
+        navigation.navigate("UseProduct", {product: item});
     }
 
     const productItem = ({item}) => {
         return <View style={styles.itemRow}>
-            <Text style={styles.cell}>{item.serialNo}</Text>
-            <Text style={styles.cell}>{item.productName}</Text>
+            <Text style={styles.cell}>{item.data.serialNo}</Text>
+            <Text style={styles.cell}>{item.data.productName}</Text>
             <View style={styles.countContainer}>
                 <TouchableOpacity style={styles.buttons} onPress={() => decrease(item)}>
                     <Text style={styles.title}> - </Text>
                 </TouchableOpacity>
-                <Text>{item.quantity}</Text>
+                <Text>{item.data.quantity}</Text>
                 <TouchableOpacity style={styles.buttons} onPress={() => increase(item)}>
                     <Text style={styles.title}> + </Text>
                 </TouchableOpacity>
             </View>
-            <Text style={styles.cell}>{item.purchasePrice}</Text>
-            <Text style={styles.cell}>{item.salePrice}</Text>
-            <TouchableOpacity onPress={() => deleteItem(item)}>
+            <Text style={styles.cell}>{item.data.purchasePrice}</Text>
+            <Text style={styles.cell}>{item.data.salePrice}</Text>
+            <TouchableOpacity onPress={() => editItem(item)} style={styles.iconContainer}>
+                <Icon name="edit" size={30} color="#aeaeae"/>
+                <Text style={styles.iconText}>Use</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => deleteItem(item)} style={styles.iconContainer}>
                 <Icon name="delete" size={30} color="#900"/>
+                <Text style={styles.iconText}>Delete</Text>
             </TouchableOpacity>
         </View>
     }
@@ -93,8 +92,9 @@ const ProductList = () => {
                     <Text style={styles.title}>Quantity</Text>
                     <Text style={styles.title}>Purchase Price </Text>
                     <Text style={styles.title}>Sale Price</Text>
+                    <View style={styles.iconContainer}/>
                 </View>
-                <FlatList data={products && products !== null ? products : null} renderItem={productItem}/>
+                <FlatList data={products && products.length > 0 ? products : null} renderItem={productItem}/>
             </View>
             <DeleteModal modalVisible={modalVisible} setModalVisible={setModalVisible} id={selectedItem}/>
         </View>
@@ -113,7 +113,8 @@ const styles = {
     },
     title: {
         color: "#fff",
-        fontSize: 17
+        fontSize: 17,
+        textAlign: "center"
     },
     countContainer: {
         flexDirection: "row",
@@ -131,7 +132,17 @@ const styles = {
     },
     cell: {
         textAlign: "center",
-        width: "20%"
+        width: "10%",
+    },
+    iconContainer: {
+        width: "5%",
+        alignItems: "center",
+
+    },
+    iconText: {
+        color: "#5d76cb",
+        marginTop: 5,
+        textAlign: "center"
     }
 }
 

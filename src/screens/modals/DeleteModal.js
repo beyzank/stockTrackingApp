@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {removeProduct} from "../../store/client/product";
 
 const DeleteModal = (props) => {
@@ -15,7 +15,6 @@ const DeleteModal = (props) => {
                 transparent={true}
                 visible={props.modalVisible}
                 onRequestClose={() => {
-                    Alert.alert("Modal has been closed.");
                     props.setModalVisible(!props.modalVisible);
                 }}
             >
@@ -67,7 +66,8 @@ const styles = StyleSheet.create({
 
     title:{
         fontSize: 18,
-        marginBottom: 10
+        marginBottom: 10,
+        textAlign: "center"
     },
     input:{
         height: 35,

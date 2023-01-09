@@ -72,9 +72,14 @@ const AddProductModal = (props) => {
                             placeholder=""
                             keyboardType="numeric"
                         />
-                        <TouchableOpacity style={styles.saveButton} onPress={writeProductData}>
-                            <Text style={styles.buttonText}>Kaydet</Text>
-                        </TouchableOpacity>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.saveButton} onPress={writeProductData}>
+                                <Text style={styles.buttonText}>Save</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.saveButton} onPress={() => props.setModalVisible(false)}>
+                                <Text style={styles.buttonText}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -83,7 +88,7 @@ const AddProductModal = (props) => {
 };
 const styles = StyleSheet.create({
     container: {
-        width: "70%",
+        width: "50%",
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
@@ -96,7 +101,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
         margin: 20,
-        width: "70%",
+        width: "50%",
         backgroundColor: "white",
         borderRadius: 20,
         padding: 35,
@@ -120,9 +125,13 @@ const styles = StyleSheet.create({
         border: "1px solid #aeaeae",
         marginBottom: 25
     },
+    buttonContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between"
+    },
     saveButton:{
         height: 40,
-        width: "100%",
+        width: "45%",
         backgroundColor: "#5d76cb",
         alignItems: "center",
         justifyContent: "center",
