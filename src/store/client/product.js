@@ -1,38 +1,36 @@
-import {child, get, ref, set, update, remove} from "firebase/database";
-import {db, dbRef} from "../../config/firebase";
+import {db} from "../../config/firebase";
+import { collection, addDoc, getDocs, setDoc, deleteDoc, doc, query, where } from "firebase/firestore";
 
 
-export const createNewProduct = (data) => {
-    return set(ref(db, 'products/' + data.serialNo), data);
+export const createNewProduct = async (data) => {
+    try {
+        await addDoc(collection(db, "Products"), data);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
+
 }
 
-export const getProducts = () => {
-    get(child(dbRef, `products/`)).then((snapshot) => {
-        if (snapshot.exists()) {
-            const array = [];
-            const data = snapshot.val()
-            Object.keys(data).map(item => {
-                array.push(data[item]);
-            });
-            return array;
-        } else {
-            console.log("No data available");
-        }
-    }).catch((error) => {
-        console.error(error);
-    });
+export const getProducts = async () => {
+    const querySnapshot = await getDocs(collection(db, "Products"));
+    return querySnapshot;
 }
 
-export const updateProduct = (data) => {
-    const updates = {};
-    updates['/products/' + data.serialNo] = data;
-    return update(dbRef, updates);
+export const updateProduct = async (data, id) => {
+    await setDoc(doc(db, "Products", id), data);
 }
 
-export const removeProduct = (id) => {
-    const tasksRef = ref(db, 'products/' + id);
-    remove(tasksRef).then(() => {
-        console.log("location removed");
-    });
+export const removeProduct = async (id) => {
+    await deleteDoc(doc(db, "Products", id));
+
+}
+
+export const filterProducts = async (queryText) => {
+    const productsRef = collection(db, "Products");
+
+    const q = await query(productsRef, where("productName", "==", queryText));
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot;
 }
 
