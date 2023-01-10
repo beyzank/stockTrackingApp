@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-import {getProducts, updateProduct} from "../store/client/product";
+import {updateProduct} from "../store/actions/client/product";
 import {useNavigation} from "@react-navigation/native";
 import Header from "./components/Header";
 import ItemContainer from "./components/UseProduct/ItemContainer";
+import actions from "../store/actions";
+import {connect} from "react-redux";
 
 const UseProduct = (props) => {
 
@@ -28,7 +30,8 @@ const UseProduct = (props) => {
             purchasePrice: item.data.purchasePrice,
             salePrice: item.data.salePrice,
         }, item.id).then(() => {
-            getProducts().then(() => navigation.navigate("Home"))
+            props.getProducts()
+            navigation.navigate("Home")
         });
     }
 
@@ -104,4 +107,9 @@ const styles = StyleSheet.create({
     }
 });
 
-export default UseProduct;
+const MapDispatchToProps = (dispatch) => {
+    return{
+        getProducts: () => dispatch(actions.products.listProducts()),
+    }
+}
+export default connect(null, MapDispatchToProps)(UseProduct);

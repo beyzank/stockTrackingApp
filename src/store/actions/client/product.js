@@ -1,4 +1,4 @@
-import {db} from "../../config/firebase";
+import {db} from "../../../config/firebase";
 import { collection, addDoc, getDocs, setDoc, deleteDoc, doc, query, where } from "firebase/firestore";
 
 
@@ -12,8 +12,13 @@ export const createNewProduct = async (data) => {
 }
 
 export const getProducts = async () => {
-    const querySnapshot = await getDocs(collection(db, "Products"));
-    return querySnapshot;
+    let array = []
+    await getDocs(collection(db, "Products")).then(res => {
+        res.forEach((doc) => {
+            array.push({data: doc.data(), id: doc.id})
+        });
+    });
+    return array;
 }
 
 export const updateProduct = async (data, id) => {
@@ -27,10 +32,13 @@ export const removeProduct = async (id) => {
 
 export const filterProducts = async (queryText) => {
     const productsRef = collection(db, "Products");
-
+    let array = []
     const q = await query(productsRef, where("productName", "==", queryText));
 
     const querySnapshot = await getDocs(q);
-    return querySnapshot;
+    querySnapshot.forEach((doc) => {
+        array.push({data: doc.data(), id: doc.id})
+    });
+    return array;
 }
 

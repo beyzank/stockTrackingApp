@@ -1,19 +1,15 @@
 import React, {useState} from 'react';
 import {TextInput, View} from "react-native";
-import {filterProducts} from "../../../store/client/product";
+import actions from "../../../store/actions";
+import {connect} from "react-redux";
 
-const FindProduct = () => {
+const FindProduct = (props) => {
     const [productName, setProductName] = useState("");
 
     const filter = async (item) => {
         setProductName(item)
-        let array = []
-        await filterProducts(item).then(res => {
-            res.forEach((doc) => {
-                array.push({data: doc.data(), id: doc.id})
-            });
-        })
-        console.log(array);
+        props.filterProducts(item)
+
     }
     return (
         <View>
@@ -38,4 +34,9 @@ const styles = {
         padding: 10
     },
 }
-export default FindProduct;
+const MapDispatchToProps = (dispatch) => {
+    return{
+        filterProducts: (text) => dispatch(actions.products.getFilteredProducts(text)),
+    }
+}
+export default connect(null,MapDispatchToProps)(FindProduct);

@@ -2,29 +2,19 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, Text, TouchableOpacity, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import DeleteModal from "../../modals/DeleteModal";
-import {getProducts, updateProduct} from "../../../store/client/product";
+import {updateProduct} from "../../../store/actions/client/product";
 import {useNavigation} from "@react-navigation/native";
+import {connect} from "react-redux";
+import actions from "../../../store/actions"
 
-const ProductList = () => {
-    const [products, setProducts] = useState([]);
+const ProductList = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState();
     const navigation = useNavigation();
-
+    const showFilteredProducts = props.filteredProducts && props.filteredProducts.length > 0;
     useEffect(() => {
-        getProductList().then(res => setProducts(res));
+        props.getProducts()
     }, []);
-
-
-    const getProductList = async () => {
-        let array = []
-        await getProducts().then(res => {
-            res.forEach((doc) => {
-                array.push({data: doc.data(), id: doc.id})
-            });
-        })
-        return array;
-    }
 
     const decrease = (item) => {
 
@@ -35,7 +25,7 @@ const ProductList = () => {
             purchasePrice: item.data.purchasePrice,
             salePrice: item.data.salePrice,
         };
-        updateProduct(postData, item.id).then(() => getProducts())
+        updateProduct(postData, item.id).then(() => props.getProducts())
     }
 
     const increase = (item) => {
@@ -47,7 +37,7 @@ const ProductList = () => {
             purchasePrice: item.data.purchasePrice,
             salePrice: item.data.salePrice,
         };
-        updateProduct(postData, item.id).then(() => getProducts())
+        updateProduct(postData, item.id).then(() => props.getProducts())
     }
 
     const deleteItem = (item) => {
@@ -94,7 +84,8 @@ const ProductList = () => {
                     <Text style={styles.title}>Sale Price</Text>
                     <View style={styles.iconContainer}/>
                 </View>
-                <FlatList data={products && products.length > 0 ? products : null} renderItem={productItem}/>
+                {showFilteredProducts ? <FlatList data={props.filteredProducts} renderItem={productItem}/> :
+                <FlatList data={props.products} renderItem={productItem}/>}
             </View>
             <DeleteModal modalVisible={modalVisible} setModalVisible={setModalVisible} id={selectedItem}/>
         </View>
@@ -145,5 +136,15 @@ const styles = {
         textAlign: "center"
     }
 }
-
-export default ProductList;
+const MapStateToProps = (state) => {
+    return {
+        products: state.products.products,
+        filteredProducts: state.products.filteredProducts,
+    }
+}
+const MapDispatchToProps = (dispatch) => {
+    return {
+        getProducts: () => dispatch(actions.products.listProducts()),
+    }
+}
+export default connect(MapStateToProps, MapDispatchToProps)(ProductList);

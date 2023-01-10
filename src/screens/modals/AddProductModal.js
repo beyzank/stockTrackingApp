@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import {Alert, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-import {createNewProduct, getProducts} from "../../store/client/product";
+import {createNewProduct} from "../../store/actions/client/product";
+import actions from "../../store/actions";
+import {connect} from "react-redux";
 
 const AddProductModal = (props) => {
     const [serialNo, setSerialNo] = useState();
@@ -15,7 +17,7 @@ const AddProductModal = (props) => {
             quantity: quantity,
             purchasePrice: purchasePrice,
             salePrice: salePrice,
-        }).then(() => getProducts());
+        }).then(() => props.getProducts());
         props.setModalVisible(false)
     }
 
@@ -141,4 +143,9 @@ const styles = StyleSheet.create({
         color: "#fff",
     }
 });
-export default AddProductModal;
+const MapDispatchToProps = (dispatch) => {
+    return{
+        getProducts: () => dispatch(actions.products.listProducts()),
+    }
+}
+export default connect(null, MapDispatchToProps)(AddProductModal);

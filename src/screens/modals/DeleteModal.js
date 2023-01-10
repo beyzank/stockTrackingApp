@@ -1,10 +1,12 @@
 import React from 'react';
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {removeProduct} from "../../store/client/product";
+import {removeProduct} from "../../store/actions/client/product";
+import actions from "../../store/actions";
+import {connect} from "react-redux";
 
 const DeleteModal = (props) => {
     const deleteItem = () => {
-        removeProduct(props.id)
+        removeProduct(props.id).then(()=> props.getProducts())
         props.setModalVisible(false)
     }
 
@@ -92,4 +94,9 @@ const styles = StyleSheet.create({
         color: "#fff",
     }
 });
-export default DeleteModal
+const MapDispatchToProps = (dispatch) => {
+    return{
+        getProducts: () => dispatch(actions.products.listProducts()),
+    }
+}
+export default connect(null, MapDispatchToProps)(DeleteModal)
