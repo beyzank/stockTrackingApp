@@ -10,14 +10,39 @@ const AddProductModal = (props) => {
     const [quantity, setQuantity] = useState();
     const [purchasePrice, setPurchasePrice] = useState();
     const [salePrice, setSalePrice] = useState();
+
+    const clearInputs = () => {
+        setSerialNo(null)
+        setProductName("")
+        setQuantity(null)
+        setPurchasePrice(null)
+        setSalePrice(null)
+    }
+
+    const closeModal = () => {
+        clearInputs()
+        props.setModalVisible(false)
+    }
+
     const writeProductData = () => {
+        if(serialNo === "" || productName === "" || quantity === "" || purchasePrice === "" || salePrice === ""){
+            alert("Please fill in all fields!");
+            return;
+        }
+        if (serialNo <= 0 || quantity <= 0 || purchasePrice <= 0 || salePrice <= 0){
+            alert("The entered value cannot be less than zero!")
+            return;
+        }
         createNewProduct({
             serialNo: serialNo,
             productName: productName,
             quantity: quantity,
             purchasePrice: purchasePrice,
             salePrice: salePrice,
-        }).then(() => props.getProducts());
+        }).then(() => {
+            props.getProducts()
+            clearInputs()
+        });
         props.setModalVisible(false)
     }
 
@@ -48,7 +73,6 @@ const AddProductModal = (props) => {
                             onChangeText={setProductName}
                             value={productName}
                             placeholder=""
-                            keyboardType="numeric"
                         />
                         <Text style={styles.title}>Stock Quantity(*)</Text>
                         <TextInput
@@ -78,7 +102,7 @@ const AddProductModal = (props) => {
                             <TouchableOpacity style={styles.saveButton} onPress={writeProductData}>
                                 <Text style={styles.buttonText}>Save</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.saveButton} onPress={() => props.setModalVisible(false)}>
+                            <TouchableOpacity style={styles.saveButton} onPress={closeModal}>
                                 <Text style={styles.buttonText}>Cancel</Text>
                             </TouchableOpacity>
                         </View>
